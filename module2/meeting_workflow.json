@@ -1,0 +1,944 @@
+{
+  "name": "workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.meetingType}}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{$json.meetingNotes}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "1e8b8866-7d47-450b-9633-b7f40090cf50",
+      "name": "✅ Validate Input",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": "REPLACE_WITH_YOUR_GOOGLE_SHEETS_ID",
+        "sheetName": "Meeting Input Log",
+        "options": {}
+      },
+      "id": "6bfa6a53-5332-4b59-adda-59834ffea54f",
+      "name": "📊 Log Meeting Input",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        -256,
+        192
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "1C7Ee7offkjU02Ym",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare data for Google Sheets\nconst items = [];\n\nfor (const item of $input.all()) {\n  const timestamp = new Date().toISOString();\n  const meetingId = `meeting-${Date.now()}`;\n  \n  items.push({\n    json: {\n      timestamp: timestamp,\n      meetingType: item.json.meetingType || '',\n      meetingNotes: (item.json.meetingNotes || '').substring(0, 100) + '...',\n      attendees: item.json.attendees || '',\n      processingStatus: 'Processing',\n      meetingId: meetingId,\n      // Store original data for later use\n      _original: item.json\n    }\n  });\n}\n\nreturn items;"
+      },
+      "id": "0890f9ab-aeac-4780-951a-91d0907bd9b5",
+      "name": "🔧 Prepare Sheet Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.meetingType.toLowerCase()}}",
+              "operation": "equals",
+              "value2": "standup"
+            }
+          ]
+        }
+      },
+      "id": "53f2da67-a638-4ea4-b8d3-53fdd37863a8",
+      "name": "🏃 Route: Standup",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        128,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.meetingType.toLowerCase()}}",
+              "operation": "equals",
+              "value2": "strategy"
+            }
+          ]
+        }
+      },
+      "id": "2b1302c1-e6b4-437d-a0d7-199dd192b4ec",
+      "name": "🎯 Route: Strategy",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        112,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.meetingType.toLowerCase()}}",
+              "operation": "equals",
+              "value2": "client"
+            }
+          ]
+        }
+      },
+      "id": "249bd7cc-ca3b-481c-8459-7617168488dd",
+      "name": "🤝 Route: Client",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        112,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-NANO"
+        },
+        "messages": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "885458e9-33c2-4886-9e0e-6534e30d6a3a",
+      "name": "🤖 AI Standup Analysis",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        656,
+        32
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "lQ9rsh4ELdtTMit5",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Add user message for standup analysis\nconst items = [];\n\nfor (const item of $input.all()) {\n  const userMessage = `Analyze this standup meeting and extract the following information in the exact format specified:\n\n**1. ACTION ITEMS (with owner and deadline):**\n- [Specific Action Item] | Owner: [Full Name] | Due: [Realistic Date] | Priority: [High/Medium/Low]\n\n**2. BLOCKERS IDENTIFIED:**\n- [Specific Blocker] | Owner: [Who is blocked] | Impact: [High/Medium/Low] | Solution: [Proposed approach]\n\n**3. PROGRESS UPDATES:**\n- [Completed/In-Progress Task] | Owner: [Full Name] | Status: [Complete/In Progress/Blocked] | Notes: [Relevant details]\n\n**4. EXECUTIVE SUMMARY (exactly 50 words):**\n[Professional summary covering key outcomes, blockers, and next steps for leadership visibility]\n\n**Meeting Details:**\nMeeting Notes: ${item.json._original.meetingNotes}\nAttendees: ${item.json._original.attendees}\nMeeting Date: ${new Date().toISOString().split('T')[0]}\n\n**Instructions:**\n- Return ONLY the structured analysis above\n- Use actual names from attendees when possible\n- Set realistic due dates (typically 1-7 days from today)\n- Prioritize based on business impact\n- Keep executive summary to exactly 50 words`;\n  \n  items.push({\n    json: {\n      ...item.json,\n      messages: [\n        {\n          role: \"user\",\n          content: userMessage\n        }\n      ]\n    }\n  });\n}\n\nreturn items;"
+      },
+      "id": "4f7a95b9-cdf8-4866-b7ce-3f63502c05f6",
+      "name": "🔧 Prep Standup Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "98b4650a-fb3e-45f9-82d5-051a1291c723",
+      "name": "🔄 Merge AI Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1472,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse AI Analysis Results\ntry {\n  const items = [];\n  \n  for (const item of $input.all()) {\n    const aiAnalysis = item.json.message?.content || item.json.response || '';\n    const meetingType = item.json.meetingType || 'general';\n    const meetingDate = new Date().toISOString().split('T')[0];\n    const attendees = item.json._original?.attendees || item.json.attendees || 'Not specified';\n    const meetingId = item.json.meetingId || `meeting-${Date.now()}`;\n    \n    // Initialize results\n    const actionItems = [];\n    const decisions = [];\n    const risks = [];\n    const commitments = [];\n    let executiveSummary = '';\n    \n    // Simple parsing logic\n    const lines = aiAnalysis.split('\\n');\n    let currentSection = '';\n    \n    for (const line of lines) {\n      const trimmedLine = line.trim();\n      \n      // Identify sections\n      if (trimmedLine.includes('ACTION ITEMS')) {\n        currentSection = 'actions';\n      } else if (trimmedLine.includes('EXECUTIVE SUMMARY')) {\n        currentSection = 'summary';\n      } else if (trimmedLine.includes('KEY DECISIONS') || trimmedLine.includes('DECISIONS MADE')) {\n        currentSection = 'decisions';\n      }\n      \n      // Parse action items\n      if (currentSection === 'actions' && trimmedLine.startsWith('-')) {\n        const parts = trimmedLine.split('|');\n        if (parts.length >= 3) {\n          actionItems.push({\n            actionItem: parts[0].replace(/^-\\s*/, ''),\n            owner: parts[1]?.replace(/Owner:\\s*/, '').trim() || 'Not assigned',\n            dueDate: parts[2]?.replace(/Due:\\s*/, '').trim() || 'Not specified',\n            priority: parts[3]?.replace(/Priority:\\s*/, '').trim() || 'Medium',\n            status: 'Not Started',\n            meetingDate,\n            meetingType,\n            meetingId\n          });\n        }\n      }\n      \n      // Parse executive summary\n      if (currentSection === 'summary' && !trimmedLine.includes('EXECUTIVE SUMMARY')) {\n        executiveSummary += trimmedLine + ' ';\n      }\n    }\n    \n    // Create output\n    items.push({\n      json: {\n        success: true,\n        actionItems,\n        decisions,\n        risks,\n        commitments,\n        summaryRecord: {\n          meetingDate,\n          meetingType,\n          keyDecisions: decisions.length > 0 ? decisions.map(d => d.decision).join('; ') : 'No major decisions',\n          executiveSummary: executiveSummary.trim() || 'Summary not available',\n          nextSteps: actionItems.length > 0 ? `${actionItems.length} action items assigned` : 'No action items',\n          attendees,\n          meetingId\n        },\n        processingMetrics: {\n          actionItemsCount: actionItems.length,\n          decisionsCount: decisions.length,\n          risksCount: risks.length,\n          commitmentsCount: commitments.length,\n          processingTime: new Date().toISOString(),\n          meetingType,\n          meetingId\n        },\n        fullAnalysis: aiAnalysis,\n        meetingId,\n        meetingType,\n        meetingDate\n      }\n    });\n  }\n  \n  return items;\n  \n} catch (error) {\n  // Error handling\n  return [{\n    json: {\n      success: false,\n      error: error.message,\n      actionItems: [],\n      summaryRecord: {\n        meetingDate: new Date().toISOString().split('T')[0],\n        meetingType: 'Error',\n        executiveSummary: 'Processing error occurred',\n        meetingId: `error-${Date.now()}`\n      },\n      processingMetrics: {\n        actionItemsCount: 0,\n        processingTime: new Date().toISOString(),\n        meetingId: `error-${Date.now()}`\n      }\n    }\n  }];\n}"
+      },
+      "id": "0e025574-5e38-4397-9eeb-dc4d93a999fd",
+      "name": "🔍 Parse AI Analysis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.success}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "dfd2acbb-632e-43e5-9843-5fdc55777947",
+      "name": "✅ If Parsing Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Save action items to sheet\nconst items = [];\n\nfor (const item of $input.all()) {\n  if (item.json.actionItems && Array.isArray(item.json.actionItems)) {\n    for (const actionItem of item.json.actionItems) {\n      items.push({\n        json: {\n          'Meeting Date': actionItem.meetingDate,\n          'Meeting Type': actionItem.meetingType,\n          'Action Item': actionItem.actionItem,\n          'Owner': actionItem.owner,\n          'Due Date': actionItem.dueDate,\n          'Priority': actionItem.priority,\n          'Status': actionItem.status,\n          'Follow-up Required': 'No',\n          'Meeting ID': actionItem.meetingId\n        }\n      });\n    }\n  }\n}\n\nreturn items;"
+      },
+      "id": "b2375710-baa6-41b1-bcec-5e468fc7743d",
+      "name": "🔧 Prep Action Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": "REPLACE_WITH_YOUR_GOOGLE_SHEETS_ID",
+        "sheetName": "Action Items",
+        "options": {}
+      },
+      "id": "890bf030-d9fb-4cea-a31e-df74669aff22",
+      "name": "📋 Save Action Items",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        2496,
+        -192
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "1C7Ee7offkjU02Ym",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare executive summary data\nconst items = [];\n\nfor (const item of $input.all()) {\n  if (item.json.summaryRecord) {\n    items.push({\n      json: {\n        'Meeting Date': item.json.summaryRecord.meetingDate,\n        'Meeting Type': item.json.summaryRecord.meetingType,\n        'Key Decisions': item.json.summaryRecord.keyDecisions,\n        'Executive Summary': item.json.summaryRecord.executiveSummary,\n        'Next Steps': item.json.summaryRecord.nextSteps,\n        'Attendees': item.json.summaryRecord.attendees,\n        'Follow-up Meetings': 'To be determined',\n        'Risks Identified': item.json.processingMetrics?.risksCount || 0,\n        'Commitments Count': item.json.processingMetrics?.commitmentsCount || 0,\n        'Meeting ID': item.json.summaryRecord.meetingId\n      }\n    });\n  }\n}\n\nreturn items;"
+      },
+      "id": "7a13b42f-3659-4c18-8799-dd45818e8e98",
+      "name": "🔧 Prep Executive Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": "REPLACE_WITH_YOUR_GOOGLE_SHEETS_ID",
+        "sheetName": "Executive Summary",
+        "options": {}
+      },
+      "id": "70d62f74-dc6d-43be-9048-74c471b1ec15",
+      "name": "📊 Save Executive Summary",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        2368,
+        208
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "1C7Ee7offkjU02Ym",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e3a530c1-f746-4ace-8a15-e0a5e458d659",
+      "name": "✅ Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2784,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 500
+        }
+      },
+      "id": "f383340b-8c90-43e3-ab72-2e24bdea6a4b",
+      "name": "❌ Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2352,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-NANO"
+        },
+        "messages": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "cd9fd7a1-7d85-4557-948f-817c827cc296",
+      "name": "🎯 AI Strategy Analysis",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        544,
+        208
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "lQ9rsh4ELdtTMit5",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-NANO"
+        },
+        "messages": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "c453f433-a3b5-4a79-881a-08d0b5b47fef",
+      "name": "🤝 AI Client Analysis",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        608,
+        400
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "lQ9rsh4ELdtTMit5",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.meetingType.toLowerCase()}}",
+              "operation": "notEqual",
+              "value2": "standup"
+            },
+            {
+              "value1": "={{$json.meetingType.toLowerCase()}}",
+              "operation": "notEqual",
+              "value2": "strategy"
+            },
+            {
+              "value1": "={{$json.meetingType.toLowerCase()}}",
+              "operation": "notEqual",
+              "value2": "client"
+            }
+          ]
+        }
+      },
+      "id": "47abd560-c65b-44fc-8831-6372df4a5e2b",
+      "name": "📋 Route: General",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        128,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-NANO"
+        },
+        "messages": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "0b33dd20-44ee-4776-a452-7217d6268ed3",
+      "name": "🏢 AI General Analysis",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        592,
+        576
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "lQ9rsh4ELdtTMit5",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "c_b9a165db954b01219c66fe01b4aec55839e8f3bb048178deab91fd97b2f21492@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "n8n Calender"
+        },
+        "triggerOn": "eventCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2336,
+        192
+      ],
+      "id": "205ee559-6849-4b21-9cc4-0fc1198d28c5",
+      "name": "Google Calendar Trigger",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "A0ZnZMnwE5lZXlbb",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const title = $input.first().json.summary.toLowerCase();\n\nlet type = 'general';\nconst patterns = {\n  standup: ['standup', 'daily', 'scrum'],\n  strategy: ['strategy', 'planning', 'roadmap'],\n  client: ['client', 'customer', 'prospect']\n};\n\nfor (const [meetingType, keywords] of Object.entries(patterns)) {\n  if (keywords.some(keyword => title.includes(keyword))) {\n    type = meetingType;\n    break;\n  }\n}\n\nreturn {\n  meetingType: type,\n  meetingTitle:$input.first().json.summary,\n  meetingUrl:$input.first().json.hangoutLink,\n  startTime: $input.first().json.start\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2112,
+        192
+      ],
+      "id": "82111d72-c2c5-4fd0-b031-fc0c249eb86f",
+      "name": "Detect Meeting Type"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://us-west-2.recall.ai/api/v1/bot",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "f856c21ea7208c5d537f3a1b75321c1fc1ed4057"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"meeting_url\": \"{{ $json.meetingUrl }}\",\n  \"recording_config\": {\n     \"audio_mixed_mp3\": {}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1936,
+        192
+      ],
+      "id": "00cade23-f162-479e-8e59-97ec113f7358",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "binaryPropertyName": "=data {{ $json.recording_config.audio_mixed_mp3 }}",
+        "options": {
+          "language": "english"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -1424,
+        192
+      ],
+      "id": "e5aad355-1f7e-4ba5-a89f-65884ac7dc62",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "AL8Ha5aqRrxVPMSb",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const prompts = {\n  standup: `Extract from this standup meeting:\n    - Individual updates (yesterday/today/blockers)\n    - Team blockers\n    - Action items with assignees\n    Format as JSON with these exact keys.`,\n  \n  strategy: `Analyse this strategy meeting for:\n    - Key decisions with rationale\n    - Strategic initiatives with owners\n    - Identified risks and mitigations\n    Format as JSON with these exact keys.`,\n  \n  client: `Summarise this client meeting:\n    - Client requirements with priority\n    - Proposals discussed with responses\n    - Commitments made with deadlines\n    Format as JSON with these exact keys.`,\n  \n  general: `Provide meeting overview:\n    - 2-3 sentence summary\n    - Key decisions made\n    - Action items with owners\n    - Follow-up required\n    Format as JSON with these exact keys.`\n};\n\nreturn {\n  prompt: prompts[$json.meetingType],\n  transcript: $json.transcript\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1104,
+        224
+      ],
+      "id": "99e8baff-156e-4b60-ad65-dfb052105aa4",
+      "name": "Code"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1728,
+        192
+      ],
+      "id": "5097c8b4-eecf-4372-a7f7-534e50b6c64b",
+      "name": "Wait",
+      "webhookId": "5dd6c02e-c299-4ced-93a6-b5e7086cbd6e"
+    },
+    {
+      "parameters": {
+        "content": "## Incomplete \n\nAnd I expect the candidate to do it. ",
+        "height": 528,
+        "width": 1072
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        208
+      ],
+      "typeVersion": 1,
+      "id": "4d552d64-b6f6-40a9-84ee-4eaa8e5f8503",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "path": "8204ed7a-b7e0-49e3-81b5-6383feaf2a65",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -2352,
+        464
+      ],
+      "id": "334d4540-d483-47ba-be16-7ea8268e604c",
+      "name": "Webhook",
+      "webhookId": "8204ed7a-b7e0-49e3-81b5-6383feaf2a65"
+    },
+    {
+      "parameters": {
+        "content": "## Add recall.ai bot \n\n Create and add API keys for ",
+        "height": 400,
+        "width": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2144,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "4f90547f-9106-4374-ab70-650be7ae50e0",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "✅ Validate Input": {
+      "main": [
+        [
+          {
+            "node": "🔧 Prepare Sheet Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Prepare Sheet Data": {
+      "main": [
+        [
+          {
+            "node": "📊 Log Meeting Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Log Meeting Input": {
+      "main": [
+        [
+          {
+            "node": "🏃 Route: Standup",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🎯 Route: Strategy",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🤝 Route: Client",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📋 Route: General",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏃 Route: Standup": {
+      "main": [
+        [
+          {
+            "node": "🔧 Prep Standup Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Prep Standup Prompt": {
+      "main": [
+        [
+          {
+            "node": "🤖 AI Standup Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Route: Strategy": {
+      "main": [
+        [
+          {
+            "node": "🎯 AI Strategy Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤝 Route: Client": {
+      "main": [
+        [
+          {
+            "node": "🤝 AI Client Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Route: General": {
+      "main": [
+        [
+          {
+            "node": "🏢 AI General Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 AI Standup Analysis": {
+      "main": [
+        [
+          {
+            "node": "🔄 Merge AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 AI Strategy Analysis": {
+      "main": [
+        [
+          {
+            "node": "🔄 Merge AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤝 AI Client Analysis": {
+      "main": [
+        [
+          {
+            "node": "🔄 Merge AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏢 AI General Analysis": {
+      "main": [
+        [
+          {
+            "node": "🔄 Merge AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Merge AI Results": {
+      "main": [
+        [
+          {
+            "node": "🔍 Parse AI Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Parse AI Analysis": {
+      "main": [
+        [
+          {
+            "node": "✅ If Parsing Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ If Parsing Success": {
+      "main": [
+        [
+          {
+            "node": "🔧 Prep Action Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🔧 Prep Executive Summary",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "❌ Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Prep Action Items": {
+      "main": [
+        [
+          {
+            "node": "📋 Save Action Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Prep Executive Summary": {
+      "main": [
+        [
+          {
+            "node": "📊 Save Executive Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Save Action Items": {
+      "main": [
+        [
+          {
+            "node": "✅ Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Save Executive Summary": {
+      "main": [
+        [
+          {
+            "node": "✅ Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar Trigger": {
+      "main": [
+        [
+          {
+            "node": "Detect Meeting Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect Meeting Type": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "✅ Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ea7018be-b6ca-4171-b071-c8a6503b76e2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cf5b61afe4255e323133ff5fa67adde397f08909aa4a8c3ee97113be661b827e"
+  },
+  "id": "fpSkTPnvKV8h6Moo",
+  "tags": []
+}
