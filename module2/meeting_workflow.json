@@ -11,8 +11,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        1200,
-        160
+        928,
+        -240
       ],
       "id": "9354af61-231a-4aa4-be29-1e123a50321d",
       "name": "🎤 Transcribe Audio File",
@@ -32,8 +32,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1488,
-        192
+        1248,
+        -224
       ]
     },
     {
@@ -47,8 +47,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        1840,
-        384
+        1456,
+        128
       ]
     },
     {
@@ -71,8 +71,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2256,
-        272
+        2080,
+        80
       ]
     },
     {
@@ -84,8 +84,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2560,
-        272
+        2384,
+        80
       ]
     },
     {
@@ -93,7 +93,7 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "{{ $credentials.googleSheets.spreadsheetId }}",
+          "value": "14BvEzVVxExSyqQaNibzQVZy2v5YcDqLDZR8T3b4gVh8",
           "mode": "id"
         },
         "sheetName": {
@@ -150,13 +150,13 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 3,
       "position": [
-        2864,
-        272
+        2608,
+        -576
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "vf9r52HYRK6KsCgq",
-          "name": "Google Sheets account 2"
+          "id": "I1JFgw8ReEzp7btA",
+          "name": "Google Sheets account 3"
         }
       }
     },
@@ -177,8 +177,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3152,
-        16
+        2960,
+        -928
       ]
     },
     {
@@ -198,8 +198,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3152,
-        208
+        2960,
+        -736
       ]
     },
     {
@@ -219,8 +219,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3152,
-        416
+        2960,
+        -528
       ]
     },
     {
@@ -250,8 +250,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3152,
-        608
+        2960,
+        -336
       ]
     },
     {
@@ -263,8 +263,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3456,
-        16
+        3264,
+        -928
       ]
     },
     {
@@ -276,8 +276,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3456,
-        208
+        3264,
+        -736
       ]
     },
     {
@@ -289,8 +289,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3456,
-        416
+        3264,
+        -528
       ]
     },
     {
@@ -302,8 +302,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3456,
-        608
+        3264,
+        -336
       ]
     },
     {
@@ -321,7 +321,7 @@
               "role": "system"
             },
             {
-              "content": "=Analyze this {{$json._original.meetingType}} meeting and extract the relevant information based on the meeting type.\n\nFor STANDUP meetings, extract:\n**1. ACTION ITEMS (with owner and deadline):**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**2. BLOCKERS IDENTIFIED:**\n- [Blocker] | Owner: [Who is blocked] | Impact: [High/Medium/Low] | Solution: [Proposed approach]\n\n**3. PROGRESS UPDATES:**\n- [Task] | Owner: [Name] | Status: [Complete/In Progress/Blocked] | Notes: [Details]\n\nFor STRATEGY meetings, extract:\n**1. KEY DECISIONS MADE:**\n- [Decision] | Rationale: [Why] | Impact: [High/Medium/Low] | Owner: [Decision Maker]\n\n**2. STRATEGIC INITIATIVES:**\n- [Initiative] | Owner: [Name] | Timeline: [Timeframe] | Resources: [Required]\n\n**3. RISKS IDENTIFIED:**\n- [Risk] | Probability: [High/Medium/Low] | Impact: [High/Medium/Low] | Mitigation: [Approach]\n\nFor CLIENT meetings, extract:\n**1. CLIENT REQUIREMENTS:**\n- [Requirement] | Priority: [High/Medium/Low] | Deadline: [Date] | Notes: [Details]\n\n**2. PROPOSALS DISCUSSED:**\n- [Proposal] | Client Response: [Positive/Neutral/Negative] | Next Steps: [Action]\n\n**3. COMMITMENTS MADE:**\n- [Commitment] | Responsible: [Person/Team] | Deadline: [Date] | Deliverable: [What]\n\nFor GENERAL meetings, extract:\n**1. MEETING SUMMARY (2-3 sentences):**\n[Overview of discussion topics and purpose]\n\n**2. KEY DECISIONS:**\n- [Decision] | Made by: [Person] | Impact: [Description]\n\n**3. ACTION ITEMS:**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**4. EXECUTIVE SUMMARY (exactly 50 words):**\n[Concise summary appropriate to the meeting type]\n\nMeeting Details:\nMeeting Type: {{$json._original.meetingType}}\nMeeting Notes: {{$json._original.meetingNotes}}\nAttendees: {{$json._original.attendees}}\nMeeting Date: {{new Date().toISOString().split('T')[0]}}"
+              "content": "=Analyze this {{$json._original.meetingType}} meeting and extract the relevant information based on the meeting type.\n\nFor STANDUP meetings, extract:\n**1. ACTION ITEMS (with owner and deadline):**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**2. BLOCKERS IDENTIFIED:**\n- [Blocker] | Owner: [Who is blocked] | Impact: [High/Medium/Low] | Solution: [Proposed approach]\n\n**3. PROGRESS UPDATES:**\n- [Task] | Owner: [Name] | Status: [Complete/In Progress/Blocked] | Notes: [Details]\n\nFor STRATEGY meetings, extract:\n**1. KEY DECISIONS MADE:**\n- [Decision] | Rationale: [Why] | Impact: [High/Medium/Low] | Owner: [Decision Maker]\n\n**2. STRATEGIC INITIATIVES:**\n- [Initiative] | Owner: [Name] | Timeline: [Timeframe] | Resources: [Required]\n\n**3. RISKS IDENTIFIED:**\n- [Risk] | Probability: [High/Medium/Low] | Impact: [High/Medium/Low] | Mitigation: [Approach]\n\nFor CLIENT meetings, extract:\n**1. CLIENT REQUIREMENTS:**\n- [Requirement] | Priority: [High/Medium/Low] | Deadline: [Date] | Notes: [Details]\n\n**2. PROPOSALS DISCUSSED:**\n- [Proposal] | Client Response: [Positive/Neutral/Negative] | Next Steps: [Action]\n\n**3. COMMITMENTS MADE:**\n- [Commitment] | Responsible: [Person/Team] | Deadline: [Date] | Deliverable: [What]\n\nFor GENERAL meetings, extract:\n**1. MEETING SUMMARY (2-3 sentences):**\n[Overview of discussion topics and purpose]\n\n**2. KEY DECISIONS:**\n- [Decision] | Made by: [Person] | Impact: [Description]\n\n**3. ACTION ITEMS:**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**4. EXECUTIVE SUMMARY (maximum 150 words):**\n[Concise summary appropriate to the meeting type]\n\nMeeting Details:\nMeeting Type: {{$json._original.meetingType}}\nMeeting Notes: {{ $json.fullTranscript }}\nAttendees: {{ $json.attendees }}\nMeeting Date: {{new Date().toISOString().split('T')[0]}}"
             }
           ]
         },
@@ -332,8 +332,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1,
       "position": [
-        3760,
-        16
+        3568,
+        -928
       ],
       "credentials": {
         "openAiApi": {
@@ -357,7 +357,7 @@
               "role": "system"
             },
             {
-              "content": "=Analyze this {{$json._original.meetingType}} meeting and extract the relevant information based on the meeting type.\n\nFor STANDUP meetings, extract:\n**1. ACTION ITEMS (with owner and deadline):**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**2. BLOCKERS IDENTIFIED:**\n- [Blocker] | Owner: [Who is blocked] | Impact: [High/Medium/Low] | Solution: [Proposed approach]\n\n**3. PROGRESS UPDATES:**\n- [Task] | Owner: [Name] | Status: [Complete/In Progress/Blocked] | Notes: [Details]\n\nFor STRATEGY meetings, extract:\n**1. KEY DECISIONS MADE:**\n- [Decision] | Rationale: [Why] | Impact: [High/Medium/Low] | Owner: [Decision Maker]\n\n**2. STRATEGIC INITIATIVES:**\n- [Initiative] | Owner: [Name] | Timeline: [Timeframe] | Resources: [Required]\n\n**3. RISKS IDENTIFIED:**\n- [Risk] | Probability: [High/Medium/Low] | Impact: [High/Medium/Low] | Mitigation: [Approach]\n\nFor CLIENT meetings, extract:\n**1. CLIENT REQUIREMENTS:**\n- [Requirement] | Priority: [High/Medium/Low] | Deadline: [Date] | Notes: [Details]\n\n**2. PROPOSALS DISCUSSED:**\n- [Proposal] | Client Response: [Positive/Neutral/Negative] | Next Steps: [Action]\n\n**3. COMMITMENTS MADE:**\n- [Commitment] | Responsible: [Person/Team] | Deadline: [Date] | Deliverable: [What]\n\nFor GENERAL meetings, extract:\n**1. MEETING SUMMARY (2-3 sentences):**\n[Overview of discussion topics and purpose]\n\n**2. KEY DECISIONS:**\n- [Decision] | Made by: [Person] | Impact: [Description]\n\n**3. ACTION ITEMS:**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**4. EXECUTIVE SUMMARY (exactly 50 words):**\n[Concise summary appropriate to the meeting type]\n\nMeeting Details:\nMeeting Type: {{$json._original.meetingType}}\nMeeting Notes: {{$json._original.meetingNotes}}\nAttendees: {{$json._original.attendees}}\nMeeting Date: {{new Date().toISOString().split('T')[0]}}"
+              "content": "=Analyze this {{$json._original.meetingType}} meeting and extract the relevant information based on the meeting type.\n\nFor STANDUP meetings, extract:\n**1. ACTION ITEMS (with owner and deadline):**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**2. BLOCKERS IDENTIFIED:**\n- [Blocker] | Owner: [Who is blocked] | Impact: [High/Medium/Low] | Solution: [Proposed approach]\n\n**3. PROGRESS UPDATES:**\n- [Task] | Owner: [Name] | Status: [Complete/In Progress/Blocked] | Notes: [Details]\n\nFor STRATEGY meetings, extract:\n**1. KEY DECISIONS MADE:**\n- [Decision] | Rationale: [Why] | Impact: [High/Medium/Low] | Owner: [Decision Maker]\n\n**2. STRATEGIC INITIATIVES:**\n- [Initiative] | Owner: [Name] | Timeline: [Timeframe] | Resources: [Required]\n\n**3. RISKS IDENTIFIED:**\n- [Risk] | Probability: [High/Medium/Low] | Impact: [High/Medium/Low] | Mitigation: [Approach]\n\nFor CLIENT meetings, extract:\n**1. CLIENT REQUIREMENTS:**\n- [Requirement] | Priority: [High/Medium/Low] | Deadline: [Date] | Notes: [Details]\n\n**2. PROPOSALS DISCUSSED:**\n- [Proposal] | Client Response: [Positive/Neutral/Negative] | Next Steps: [Action]\n\n**3. COMMITMENTS MADE:**\n- [Commitment] | Responsible: [Person/Team] | Deadline: [Date] | Deliverable: [What]\n\nFor GENERAL meetings, extract:\n**1. MEETING SUMMARY (2-3 sentences):**\n[Overview of discussion topics and purpose]\n\n**2. KEY DECISIONS:**\n- [Decision] | Made by: [Person] | Impact: [Description]\n\n**3. ACTION ITEMS:**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**4. EXECUTIVE SUMMARY (maximum 150 words):**\n[Concise summary appropriate to the meeting type]\n\nMeeting Details:\nMeeting Type: {{$json._original.meetingType}}\nMeeting Notes: {{ $json.fullTranscript }}\nAttendees: {{ $json.attendees }}\nMeeting Date: {{new Date().toISOString().split('T')[0]}}"
             }
           ]
         },
@@ -368,8 +368,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1,
       "position": [
-        3760,
-        208
+        3568,
+        -736
       ],
       "credentials": {
         "openAiApi": {
@@ -393,7 +393,7 @@
               "role": "system"
             },
             {
-              "content": "=Analyze this {{$json._original.meetingType}} meeting and extract the relevant information based on the meeting type.\n\nFor STANDUP meetings, extract:\n**1. ACTION ITEMS (with owner and deadline):**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**2. BLOCKERS IDENTIFIED:**\n- [Blocker] | Owner: [Who is blocked] | Impact: [High/Medium/Low] | Solution: [Proposed approach]\n\n**3. PROGRESS UPDATES:**\n- [Task] | Owner: [Name] | Status: [Complete/In Progress/Blocked] | Notes: [Details]\n\nFor STRATEGY meetings, extract:\n**1. KEY DECISIONS MADE:**\n- [Decision] | Rationale: [Why] | Impact: [High/Medium/Low] | Owner: [Decision Maker]\n\n**2. STRATEGIC INITIATIVES:**\n- [Initiative] | Owner: [Name] | Timeline: [Timeframe] | Resources: [Required]\n\n**3. RISKS IDENTIFIED:**\n- [Risk] | Probability: [High/Medium/Low] | Impact: [High/Medium/Low] | Mitigation: [Approach]\n\nFor CLIENT meetings, extract:\n**1. CLIENT REQUIREMENTS:**\n- [Requirement] | Priority: [High/Medium/Low] | Deadline: [Date] | Notes: [Details]\n\n**2. PROPOSALS DISCUSSED:**\n- [Proposal] | Client Response: [Positive/Neutral/Negative] | Next Steps: [Action]\n\n**3. COMMITMENTS MADE:**\n- [Commitment] | Responsible: [Person/Team] | Deadline: [Date] | Deliverable: [What]\n\nFor GENERAL meetings, extract:\n**1. MEETING SUMMARY (2-3 sentences):**\n[Overview of discussion topics and purpose]\n\n**2. KEY DECISIONS:**\n- [Decision] | Made by: [Person] | Impact: [Description]\n\n**3. ACTION ITEMS:**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**4. EXECUTIVE SUMMARY (exactly 50 words):**\n[Concise summary appropriate to the meeting type]\n\nMeeting Details:\nMeeting Type: {{$json._original.meetingType}}\nMeeting Notes: {{$json._original.meetingNotes}}\nAttendees: {{$json._original.attendees}}\nMeeting Date: {{new Date().toISOString().split('T')[0]}}"
+              "content": "=Analyze this {{$json._original.meetingType}} meeting and extract the relevant information based on the meeting type.\n\nFor STANDUP meetings, extract:\n**1. ACTION ITEMS (with owner and deadline):**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**2. BLOCKERS IDENTIFIED:**\n- [Blocker] | Owner: [Who is blocked] | Impact: [High/Medium/Low] | Solution: [Proposed approach]\n\n**3. PROGRESS UPDATES:**\n- [Task] | Owner: [Name] | Status: [Complete/In Progress/Blocked] | Notes: [Details]\n\nFor STRATEGY meetings, extract:\n**1. KEY DECISIONS MADE:**\n- [Decision] | Rationale: [Why] | Impact: [High/Medium/Low] | Owner: [Decision Maker]\n\n**2. STRATEGIC INITIATIVES:**\n- [Initiative] | Owner: [Name] | Timeline: [Timeframe] | Resources: [Required]\n\n**3. RISKS IDENTIFIED:**\n- [Risk] | Probability: [High/Medium/Low] | Impact: [High/Medium/Low] | Mitigation: [Approach]\n\nFor CLIENT meetings, extract:\n**1. CLIENT REQUIREMENTS:**\n- [Requirement] | Priority: [High/Medium/Low] | Deadline: [Date] | Notes: [Details]\n\n**2. PROPOSALS DISCUSSED:**\n- [Proposal] | Client Response: [Positive/Neutral/Negative] | Next Steps: [Action]\n\n**3. COMMITMENTS MADE:**\n- [Commitment] | Responsible: [Person/Team] | Deadline: [Date] | Deliverable: [What]\n\nFor GENERAL meetings, extract:\n**1. MEETING SUMMARY (2-3 sentences):**\n[Overview of discussion topics and purpose]\n\n**2. KEY DECISIONS:**\n- [Decision] | Made by: [Person] | Impact: [Description]\n\n**3. ACTION ITEMS:**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**4. EXECUTIVE SUMMARY (maximum 150 words):**\n[Concise summary appropriate to the meeting type]\n\nMeeting Details:\nMeeting Type: {{$json._original.meetingType}}\nMeeting Notes: {{ $json.fullTranscript }}\nAttendees: {{ $json.attendees }}\nMeeting Date: {{new Date().toISOString().split('T')[0]}}"
             }
           ]
         },
@@ -404,13 +404,13 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1,
       "position": [
-        3760,
-        416
+        3568,
+        -528
       ],
       "credentials": {
         "openAiApi": {
-          "id": "lQ9rsh4ELdtTMit5",
-          "name": "n8n free OpenAI API credits"
+          "id": "NX2lXjuSypMLw3DA",
+          "name": "OpenAi account 2"
         }
       }
     },
@@ -429,7 +429,7 @@
               "role": "system"
             },
             {
-              "content": "=Meeting Type: {{$json._original.meetingType}}\nMeeting Notes: {{$json._original.meetingNotes}}\nAttendees: {{$json._original.attendees}}\n\nBased on the meeting type above, extract and format:\n- For standup: Action items, blockers, and progress updates\n- For strategy: Key decisions, initiatives, and risks  \n- For client: Requirements, proposals, and commitments\n- For general: Summary, decisions, and action items\n\nInclude a 50-word executive summary.\n\nUse this format:\n**[SECTION NAME]:**\n- [Item] | [Field]: [Value] | [Field]: [Value]"
+              "content": "=Analyze this {{$json._original.meetingType}} meeting and extract the relevant information based on the meeting type.\n\nFor STANDUP meetings, extract:\n**1. ACTION ITEMS (with owner and deadline):**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**2. BLOCKERS IDENTIFIED:**\n- [Blocker] | Owner: [Who is blocked] | Impact: [High/Medium/Low] | Solution: [Proposed approach]\n\n**3. PROGRESS UPDATES:**\n- [Task] | Owner: [Name] | Status: [Complete/In Progress/Blocked] | Notes: [Details]\n\nFor STRATEGY meetings, extract:\n**1. KEY DECISIONS MADE:**\n- [Decision] | Rationale: [Why] | Impact: [High/Medium/Low] | Owner: [Decision Maker]\n\n**2. STRATEGIC INITIATIVES:**\n- [Initiative] | Owner: [Name] | Timeline: [Timeframe] | Resources: [Required]\n\n**3. RISKS IDENTIFIED:**\n- [Risk] | Probability: [High/Medium/Low] | Impact: [High/Medium/Low] | Mitigation: [Approach]\n\nFor CLIENT meetings, extract:\n**1. CLIENT REQUIREMENTS:**\n- [Requirement] | Priority: [High/Medium/Low] | Deadline: [Date] | Notes: [Details]\n\n**2. PROPOSALS DISCUSSED:**\n- [Proposal] | Client Response: [Positive/Neutral/Negative] | Next Steps: [Action]\n\n**3. COMMITMENTS MADE:**\n- [Commitment] | Responsible: [Person/Team] | Deadline: [Date] | Deliverable: [What]\n\nFor GENERAL meetings, extract:\n**1. MEETING SUMMARY (2-3 sentences):**\n[Overview of discussion topics and purpose]\n\n**2. KEY DECISIONS:**\n- [Decision] | Made by: [Person] | Impact: [Description]\n\n**3. ACTION ITEMS:**\n- [Action] | Owner: [Name] | Due: [Date] | Priority: [High/Medium/Low]\n\n**4. EXECUTIVE SUMMARY (maximum 150 words):**\n[Concise summary appropriate to the meeting type]\n\nMeeting Details:\nMeeting Type: {{$json._original.meetingType}}\nMeeting Notes: {{ $json.fullTranscript }}\nAttendees: {{ $json.attendees }}\nMeeting Date: {{new Date().toISOString().split('T')[0]}}"
             }
           ]
         },
@@ -440,8 +440,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1,
       "position": [
-        3760,
-        608
+        3568,
+        -336
       ],
       "credentials": {
         "openAiApi": {
@@ -457,21 +457,21 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        4688,
-        288
+        4496,
+        -656
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Enhanced parsing with better error handling\ntry {\n  const items = [];\n  \n  for (const item of $input.all()) {\n    const aiAnalysis = item.json.message?.content || item.json.response || '';\n    const meetingType = item.json.meetingType || 'general';\n    const meetingDate = new Date().toISOString().split('T')[0];\n    const attendees = item.json._original?.attendees || item.json.attendees || 'Not specified';\n    const meetingId = item.json.meetingId || `meeting-${Date.now()}`;\n    \n    // Initialize results with defaults\n    const actionItems = [];\n    const decisions = [];\n    const risks = [];\n    const commitments = [];\n    let executiveSummary = '';\n    \n    // More robust parsing\n    const lines = aiAnalysis.split('\\n');\n    let currentSection = '';\n    \n    for (const line of lines) {\n      const trimmedLine = line.trim();\n      \n      // Section detection (case-insensitive)\n      if (trimmedLine.toUpperCase().includes('ACTION ITEMS')) {\n        currentSection = 'actions';\n      } else if (trimmedLine.toUpperCase().includes('EXECUTIVE SUMMARY')) {\n        currentSection = 'summary';\n      } else if (trimmedLine.toUpperCase().includes('KEY DECISIONS') || trimmedLine.toUpperCase().includes('DECISIONS MADE')) {\n        currentSection = 'decisions';\n      } else if (trimmedLine.toUpperCase().includes('BLOCKERS')) {\n        currentSection = 'blockers';\n      } else if (trimmedLine.toUpperCase().includes('RISKS')) {\n        currentSection = 'risks';\n      } else if (trimmedLine.toUpperCase().includes('COMMITMENTS')) {\n        currentSection = 'commitments';\n      }\n      \n      // Enhanced action item parsing\n      if (currentSection === 'actions' && trimmedLine.startsWith('-')) {\n        const parts = trimmedLine.split('|').map(p => p.trim());\n        if (parts.length >= 2) {\n          actionItems.push({\n            actionItem: parts[0].replace(/^-\\s*/, '').replace(/^\\[/, '').replace(/\\]$/, ''),\n            owner: parts[1]?.replace(/Owner:\\s*/i, '').trim() || 'Not assigned',\n            dueDate: parts[2]?.replace(/Due:\\s*/i, '').trim() || 'Not specified',\n            priority: parts[3]?.replace(/Priority:\\s*/i, '').trim() || 'Medium',\n            status: 'Not Started',\n            meetingDate,\n            meetingType,\n            meetingId\n          });\n        }\n      }\n      \n      // Parse decisions\n      if (currentSection === 'decisions' && trimmedLine.startsWith('-')) {\n        const parts = trimmedLine.split('|').map(p => p.trim());\n        if (parts.length >= 1) {\n          decisions.push({\n            decision: parts[0].replace(/^-\\s*/, '').replace(/^\\[/, '').replace(/\\]$/, ''),\n            madeBy: parts[1]?.replace(/Made by:\\s*/i, '').trim() || 'Team',\n            impact: parts[2]?.replace(/Impact:\\s*/i, '').trim() || 'Not specified'\n          });\n        }\n      }\n      \n      // Parse risks\n      if (currentSection === 'risks' && trimmedLine.startsWith('-')) {\n        const parts = trimmedLine.split('|').map(p => p.trim());\n        if (parts.length >= 1) {\n          risks.push({\n            risk: parts[0].replace(/^-\\s*/, '').replace(/^\\[/, '').replace(/\\]$/, ''),\n            probability: parts[1]?.replace(/Probability:\\s*/i, '').trim() || 'Medium',\n            impact: parts[2]?.replace(/Impact:\\s*/i, '').trim() || 'Medium'\n          });\n        }\n      }\n      \n      // Parse commitments\n      if (currentSection === 'commitments' && trimmedLine.startsWith('-')) {\n        const parts = trimmedLine.split('|').map(p => p.trim());\n        if (parts.length >= 1) {\n          commitments.push({\n            commitment: parts[0].replace(/^-\\s*/, '').replace(/^\\[/, '').replace(/\\]$/, ''),\n            responsible: parts[1]?.replace(/Responsible:\\s*/i, '').trim() || 'Team',\n            deadline: parts[2]?.replace(/Deadline:\\s*/i, '').trim() || 'Not specified'\n          });\n        }\n      }\n      \n      // Capture executive summary (multi-line support)\n      if (currentSection === 'summary' && !trimmedLine.toUpperCase().includes('EXECUTIVE SUMMARY') && trimmedLine.length > 0) {\n        executiveSummary += trimmedLine + ' ';\n      }\n    }\n    \n    // Create output with validation\n    items.push({\n      json: {\n        success: true,\n        actionItems: actionItems.filter(item => item.actionItem && item.actionItem.length > 0),\n        decisions,\n        risks,\n        commitments,\n        summaryRecord: {\n          meetingDate,\n          meetingType,\n          keyDecisions: decisions.length > 0 ? decisions.map(d => d.decision).join('; ') : 'No major decisions',\n          executiveSummary: executiveSummary.trim().substring(0, 500) || 'Summary not available',\n          nextSteps: actionItems.length > 0 ? `${actionItems.length} action items assigned` : 'No action items',\n          attendees,\n          meetingId\n        },\n        processingMetrics: {\n          actionItemsCount: actionItems.length,\n          decisionsCount: decisions.length,\n          risksCount: risks.length,\n          commitmentsCount: commitments.length,\n          processingTime: new Date().toISOString(),\n          meetingType,\n          meetingId\n        },\n        fullAnalysis: aiAnalysis,\n        meetingId,\n        meetingType,\n        meetingDate\n      }\n    });\n  }\n  \n  return items;\n  \n} catch (error) {\n  // Detailed error handling\n  console.error('Parsing error:', error);\n  return [{\n    json: {\n      success: false,\n      error: error.message,\n      errorDetails: error.stack,\n      actionItems: [],\n      summaryRecord: {\n        meetingDate: new Date().toISOString().split('T')[0],\n        meetingType: $json.meetingType || 'Error',\n        executiveSummary: `Processing error: ${error.message}`,\n        meetingId: `error-${Date.now()}`\n      },\n      processingMetrics: {\n        actionItemsCount: 0,\n        processingTime: new Date().toISOString(),\n        meetingId: `error-${Date.now()}`\n      }\n    }\n  }];\n}"
+        "jsCode": "// Transform meeting data for n8n\nlet inputData;\ntry {\n  inputData = $input.all();\n  // If data is nested under 'json' property (common in n8n)\n  if (inputData[0] && inputData[0].json) {\n    inputData = inputData.map(item => item.json);\n  }\n} catch (e) {\n  console.log('Error accessing input:', e);\n  inputData = [];\n}\n\n// Debug: log input structure\nconsole.log('Input data structure:', JSON.stringify(inputData.slice(0, 1), null, 2));\n\nconst createEmptyResult = (id, type, date) => ({\n  success: true,\n  actionItems: [],\n  decisions: [],\n  risks: [],\n  commitments: [],\n  summaryRecord: {\n    meetingDate: date,\n    meetingType: type,\n    keyDecisions: 'No major decisions',\n    executiveSummary: 'Summary not available',\n    nextSteps: 'No action items',\n    attendees: 'Not specified',\n    meetingId: id\n  },\n  processingMetrics: {\n    actionItemsCount: 0,\n    decisionsCount: 0,\n    risksCount: 0,\n    commitmentsCount: 0,\n    processingTime: new Date().toISOString(),\n    meetingType: type,\n    meetingId: id\n  },\n  fullAnalysis: '',\n  meetingId: id,\n  meetingType: type,\n  meetingDate: date\n});\n\nconst transformMeeting = (meeting) => {\n  const { meetingId, meetingType, meetingDate, aiResponse } = meeting;\n  \n  // Defensive check for aiResponse\n  if (!aiResponse || typeof aiResponse !== 'string') {\n    console.log('Missing or invalid aiResponse:', { meetingId, aiResponse: typeof aiResponse });\n    return createEmptyResult(meetingId, meetingType, meetingDate);\n  }\n  \n  // Parse structured sections from aiResponse\n  const parseSection = (text, sectionNum, sectionName) => {\n    if (!text) return '';\n    const regex = new RegExp(`\\\\*\\\\*${sectionNum}\\\\. ${sectionName}:\\\\*\\\\*\\\\s*([\\\\s\\\\S]*?)(?=\\\\*\\\\*\\\\d+\\\\.|$)`, 'i');\n    const match = text.match(regex);\n    return match ? match[1].trim() : '';\n  };\n  \n  // Extract sections\n  const actionItemsText = parseSection(aiResponse, '6', 'ACTION ITEMS');\n  const decisionsText = parseSection(aiResponse, '5', 'KEY DECISIONS');  \n  const commitmentsText = parseSection(aiResponse, '3', 'COMMITMENTS MADE');\n  const summaryText = parseSection(aiResponse, '4', 'MEETING SUMMARY');\n  const requirementsText = parseSection(aiResponse, '1', 'CLIENT REQUIREMENTS');\n  \n  // Parse action items\n  const actionItems = actionItemsText ? actionItemsText.split('\\n')\n    .filter(line => line.trim().startsWith('-'))\n    .map(line => {\n      const parts = line.substring(1).split('|').map(p => p.trim());\n      return {\n        description: parts[0] || '',\n        owner: parts.find(p => p.startsWith('Owner:'))?.replace('Owner:', '').trim() || 'Not assigned',\n        dueDate: parts.find(p => p.startsWith('Due:'))?.replace('Due:', '').trim() || '',\n        priority: parts.find(p => p.startsWith('Priority:'))?.replace('Priority:', '').trim() || 'Medium'\n      };\n    }) : [];\n  \n  // Parse decisions\n  const decisions = decisionsText ? decisionsText.split('\\n')\n    .filter(line => line.trim().startsWith('-'))\n    .map(line => {\n      const parts = line.substring(1).split('|').map(p => p.trim());\n      return {\n        decision: parts[0] || '',\n        madeBy: parts.find(p => p.startsWith('Made by:'))?.replace('Made by:', '').trim() || 'Unknown',\n        impact: parts.find(p => p.startsWith('Impact:'))?.replace('Impact:', '').trim() || ''\n      };\n    }) : [];\n  \n  // Parse commitments  \n  const commitments = commitmentsText ? commitmentsText.split('\\n')\n    .filter(line => line.trim().startsWith('-'))\n    .map(line => {\n      const parts = line.substring(1).split('|').map(p => p.trim());\n      return {\n        commitment: parts[0] || '',\n        responsible: parts.find(p => p.startsWith('Responsible:'))?.replace('Responsible:', '').trim() || 'Unassigned',\n        deadline: parts.find(p => p.startsWith('Deadline:'))?.replace('Deadline:', '').trim() || '',\n        deliverable: parts.find(p => p.startsWith('Deliverable:'))?.replace('Deliverable:', '').trim() || ''\n      };\n    }) : [];\n  \n  return {\n    success: true,\n    actionItems,\n    decisions,\n    risks: [], // No risks in source data\n    commitments,\n    summaryRecord: {\n      meetingDate,\n      meetingType,\n      keyDecisions: decisions.length ? decisions.map(d => d.decision).join('; ') : 'No major decisions',\n      executiveSummary: summaryText || 'Summary not available',\n      nextSteps: actionItems.length ? actionItems.map(ai => ai.description).join('; ') : 'No action items',\n      attendees: 'Not specified',\n      meetingId\n    },\n    processingMetrics: {\n      actionItemsCount: actionItems.length,\n      decisionsCount: decisions.length,\n      risksCount: 0,\n      commitmentsCount: commitments.length,\n      processingTime: new Date().toISOString(),\n      meetingType,\n      meetingId\n    },\n    fullAnalysis: aiResponse,\n    meetingId,\n    meetingType,\n    meetingDate\n  };\n};\n\n// Transform all meetings\nreturn inputData.map(transformMeeting);"
       },
       "id": "49ade9cd-6eac-48d3-b8af-2801198ac681",
       "name": "🔍 Parse AI Analysis",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4944,
-        288
+        4704,
+        -192
       ]
     },
     {
@@ -490,20 +490,20 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        5232,
-        288
+        3728,
+        384
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Save action items to sheet with validation\nconst items = [];\n\nfor (const item of $input.all()) {\n  if (item.json.actionItems && Array.isArray(item.json.actionItems)) {\n    for (const actionItem of item.json.actionItems) {\n      // Validate and sanitize data\n      const cleanedItem = {\n        'Meeting Date': actionItem.meetingDate || new Date().toISOString().split('T')[0],\n        'Meeting Type': actionItem.meetingType || 'general',\n        'Action Item': (actionItem.actionItem || '').substring(0, 500),\n        'Owner': (actionItem.owner || 'Not assigned').substring(0, 100),\n        'Due Date': actionItem.dueDate || 'Not specified',\n        'Priority': ['High', 'Medium', 'Low'].includes(actionItem.priority) ? actionItem.priority : 'Medium',\n        'Status': actionItem.status || 'Not Started',\n        'Follow-up Required': 'No',\n        'Meeting ID': actionItem.meetingId || `meeting-${Date.now()}`\n      };\n      \n      // Only add if action item has content\n      if (cleanedItem['Action Item'].trim().length > 0) {\n        items.push({ json: cleanedItem });\n      }\n    }\n  }\n}\n\n// Add a summary row if no items found\nif (items.length === 0) {\n  items.push({\n    json: {\n      'Meeting Date': new Date().toISOString().split('T')[0],\n      'Meeting Type': item.json.meetingType || 'general',\n      'Action Item': 'No action items identified',\n      'Owner': 'N/A',\n      'Due Date': 'N/A',\n      'Priority': 'Low',\n      'Status': 'N/A',\n      'Follow-up Required': 'No',\n      'Meeting ID': item.json.meetingId || `meeting-${Date.now()}`\n    }\n  });\n}\n\nreturn items;"
+        "jsCode": "// Save action items to sheet with validation\nconst items = [];\n\nfor (const item of $input.all()) {\n  // Handle nested json property if present\n  const meetingData = item.json || item;\n  \n  if (meetingData.actionItems && Array.isArray(meetingData.actionItems)) {\n    for (const actionItem of meetingData.actionItems) {\n      // Validate and sanitize data\n      const cleanedItem = {\n        'Meeting Date': meetingData.meetingDate || new Date().toISOString().split('T')[0],\n        'Meeting Type': meetingData.meetingType || 'general',\n        'Action Item': (actionItem.description || '').substring(0, 500),\n        'Owner': (actionItem.owner || 'Not assigned').substring(0, 100),\n        'Due Date': actionItem.dueDate || 'Not specified',\n        'Priority': ['High', 'Medium', 'Low'].includes(actionItem.priority) ? actionItem.priority : 'Medium',\n        'Status': actionItem.status || 'Not Started',\n        'Follow-up Required': 'No',\n        'Meeting ID': meetingData.meetingId || `meeting-${Date.now()}`\n      };\n      \n      // Only add if action item has content\n      if (cleanedItem['Action Item'].trim().length > 0) {\n        items.push({ json: cleanedItem });\n      }\n    }\n  }\n}\n\n// Add a summary row if no items found\nif (items.length === 0) {\n  const firstItem = $input.first();\n  const meetingData = firstItem.json || firstItem;\n  \n  items.push({\n    json: {\n      'Meeting Date': meetingData.meetingDate || new Date().toISOString().split('T')[0],\n      'Meeting Type': meetingData.meetingType || 'general',\n      'Action Item': 'No action items identified',\n      'Owner': 'N/A',\n      'Due Date': 'N/A',\n      'Priority': 'Low',\n      'Status': 'N/A',\n      'Follow-up Required': 'No',\n      'Meeting ID': meetingData.meetingId || `meeting-${Date.now()}`\n    }\n  });\n}\n\nreturn items;"
       },
       "id": "b7eee0c3-39bb-4b2d-bb58-7b9e122fda6f",
       "name": "🔧 Prep Action Items",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5536,
+        4224,
         128
       ]
     },
@@ -512,7 +512,7 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "{{ $credentials.googleSheets.spreadsheetId }}",
+          "value": "14BvEzVVxExSyqQaNibzQVZy2v5YcDqLDZR8T3b4gVh8",
           "mode": "id"
         },
         "sheetName": {
@@ -565,13 +565,13 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 3,
       "position": [
-        5840,
+        4528,
         128
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "vf9r52HYRK6KsCgq",
-          "name": "Google Sheets account 2"
+          "id": "I1JFgw8ReEzp7btA",
+          "name": "Google Sheets account 3"
         }
       }
     },
@@ -584,7 +584,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5536,
+        4224,
         432
       ]
     },
@@ -593,7 +593,7 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "{{ $credentials.googleSheets.spreadsheetId }}",
+          "value": "14BvEzVVxExSyqQaNibzQVZy2v5YcDqLDZR8T3b4gVh8",
           "mode": "id"
         },
         "sheetName": {
@@ -654,13 +654,13 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 3,
       "position": [
-        5840,
+        4528,
         432
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "vf9r52HYRK6KsCgq",
-          "name": "Google Sheets account 2"
+          "id": "I1JFgw8ReEzp7btA",
+          "name": "Google Sheets account 3"
         }
       }
     },
@@ -673,7 +673,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        6144,
+        4816,
         288
       ]
     },
@@ -688,7 +688,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        5536,
+        4224,
         640
       ]
     },
@@ -705,7 +705,7 @@
         },
         "calendarId": {
           "__rl": true,
-          "value": "{{ $credentials.googleCalendar.calendarId }}",
+          "value": "GOOGLE_CALANDER_ID",
           "mode": "list",
           "cachedResultName": "n8n Calender"
         },
@@ -715,8 +715,8 @@
       "type": "n8n-nodes-base.googleCalendarTrigger",
       "typeVersion": 1,
       "position": [
-        -160,
-        -64
+        256,
+        -768
       ],
       "id": "1453f406-7372-4163-af9c-7297ddaa5eab",
       "name": "Google Calendar Trigger",
@@ -756,8 +756,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        144,
-        -80
+        560,
+        -784
       ],
       "id": "fd058506-f0b2-486c-ac62-6cfb0d6f1969",
       "name": "HTTP Request"
@@ -774,8 +774,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        688,
-        -80
+        1104,
+        -784
       ],
       "id": "4421c5f8-1088-44d2-94b3-c097e40f6adf",
       "name": "Transcribe a recording",
@@ -793,8 +793,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1072,
-        -32
+        1488,
+        -736
       ],
       "id": "1a60ac89-d89a-4055-ba84-833369458e57",
       "name": "Code"
@@ -804,8 +804,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        384,
-        -80
+        800,
+        -784
       ],
       "id": "64624354-7ba1-437d-afff-afc35e9c4e06",
       "name": "Wait",
@@ -815,14 +815,13 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "8204ed7a-b7e0-49e3-81b5-6383feaf2a65",
-        "responseMode": "responseNode",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -128,
-        256
+        -352,
+        128
       ],
       "id": "093f778f-4e1f-458a-9bff-a164c45c827f",
       "name": "Webhook1",
@@ -837,9 +836,74 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        368,
-        256
+        -16,
+        128
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const transcript = $input.first().json.meetingNotes || $input.first().json.transcript || $input.first().json.text || '';\n\n\n// Enhanced classification logic based on content analysis\nfunction classifyMeetingType(transcript) {\n  const content = (transcript).toLowerCase();\n  \n  // Scoring system for better accuracy\n  const typeScores = {\n    standup: 0,\n    strategy: 0,\n    client: 0,\n    general: 0\n  };\n  \n  // Standup indicators (higher weight for specific phrases)\n  const standupPatterns = [\n    { pattern: /what did you do yesterday|what are you working on today|any blockers/g, weight: 10 },\n    { pattern: /standup|daily|scrum|sprint/g, weight: 8 },\n    { pattern: /yesterday|today|tomorrow|blocked|blocker/g, weight: 3 },\n    { pattern: /completed|working on|will do|impediment/g, weight: 2 }\n  ];\n  \n  // Strategy indicators\n  const strategyPatterns = [\n    { pattern: /roadmap|strategy|vision|goal|objective|initiative/g, weight: 8 },\n    { pattern: /quarterly|annual|long.?term|strategic|planning/g, weight: 6 },\n    { pattern: /budget|investment|resource allocation|priorit/g, weight: 4 },\n    { pattern: /market|competitive|business model/g, weight: 3 }\n  ];\n  \n  // Client indicators\n  const clientPatterns = [\n    { pattern: /client|customer|proposal|requirement|delivery/g, weight: 8 },\n    { pattern: /contract|agreement|scope|timeline|budget/g, weight: 6 },\n    { pattern: /feedback|review|approval|sign.?off/g, weight: 4 },\n    { pattern: /external|stakeholder|presentation/g, weight: 3 }\n  ];\n  \n  // Calculate scores\n  for (const patterns of [standupPatterns, strategyPatterns, clientPatterns]) {\n    const typeKey = patterns === standupPatterns ? 'standup' : \n                   patterns === strategyPatterns ? 'strategy' : 'client';\n    \n    patterns.forEach(({ pattern, weight }) => {\n      const matches = content.match(pattern) || [];\n      typeScores[typeKey] += matches.length * weight;\n    });\n  }\n  \n  // Determine winning type (minimum threshold to avoid false positives)\n  const minThreshold = 5;\n  const maxScore = Math.max(...Object.values(typeScores));\n  const winningType = maxScore >= minThreshold ? \n    Object.keys(typeScores).find(key => typeScores[key] === maxScore) : 'general';\n  \n  return {\n    detectedType: winningType,\n    confidence: Math.min(maxScore / 20, 1), // Normalised confidence score\n    scores: typeScores,\n    reasoning: `Classified as ${winningType} with ${Math.round(maxScore)} points`\n  };\n}\n\nconst classification = classifyMeetingType(transcript);\n\nreturn {\n  meetingType: classification.detectedType,\n  meetingUrl: $input.first().json.hangoutLink || $input.first().json.meetingUrl || '',\n  startTime: $input.first().json.start || new Date().toISOString(),\n  transcript: transcript, // Keep full transcript available\n  classification: classification,\n  // Ensure consistent structure for merge compatibility\n  _structureVersion: '2.0'\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        80
+      ],
+      "id": "fef946c0-a4b5-4f43-a32f-be54bf02f382",
+      "name": "🧠 Intelligent Meeting Classifier"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4096,
+        -912
+      ],
+      "id": "900736f0-e3d2-4c20-8081-93445e1de632",
+      "name": "🔄 Normalise AI Input Structure"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4096,
+        -736
+      ],
+      "id": "e6e1daf5-7f2b-40bb-90cb-2230a556f63f",
+      "name": "🔄 Normalise AI Input Structure1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4096,
+        -528
+      ],
+      "id": "0e24a9a3-dba6-42da-80e8-123e09492f5f",
+      "name": "🔄 Normalise AI Input Structure2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        -352
+      ],
+      "id": "13b3a73b-fe86-4c5f-bd67-589bc0a91441",
+      "name": "🔄 Normalise AI Input Structure3"
     },
     {
       "parameters": {
@@ -853,12 +917,12 @@
         }
       },
       "id": "2b9b7001-9dc1-46a6-b262-f4f01a4c4fcd",
-      "name": "🎵 Needs Transcription?1",
+      "name": "🎵 Needs Transcription?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        640,
-        288
+        416,
+        160
       ]
     },
     {
@@ -868,76 +932,90 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        848,
-        192
+        608,
+        -224
       ],
       "id": "a7ffb8ed-059b-4786-850b-a56c2b2f89b9",
-      "name": "Code1"
+      "name": "final_validation"
     },
     {
       "parameters": {
-        "jsCode": "const transcript = $input.first().json.meetingNotes || $input.first().json.transcript || $input.first().json.text || '';\n\n\n// Enhanced classification logic based on content analysis\nfunction classifyMeetingType(transcript) {\n  const content = (transcript).toLowerCase();\n  \n  // Scoring system for better accuracy\n  const typeScores = {\n    standup: 0,\n    strategy: 0,\n    client: 0,\n    general: 0\n  };\n  \n  // Standup indicators (higher weight for specific phrases)\n  const standupPatterns = [\n    { pattern: /what did you do yesterday|what are you working on today|any blockers/g, weight: 10 },\n    { pattern: /standup|daily|scrum|sprint/g, weight: 8 },\n    { pattern: /yesterday|today|tomorrow|blocked|blocker/g, weight: 3 },\n    { pattern: /completed|working on|will do|impediment/g, weight: 2 }\n  ];\n  \n  // Strategy indicators\n  const strategyPatterns = [\n    { pattern: /roadmap|strategy|vision|goal|objective|initiative/g, weight: 8 },\n    { pattern: /quarterly|annual|long.?term|strategic|planning/g, weight: 6 },\n    { pattern: /budget|investment|resource allocation|priorit/g, weight: 4 },\n    { pattern: /market|competitive|business model/g, weight: 3 }\n  ];\n  \n  // Client indicators\n  const clientPatterns = [\n    { pattern: /client|customer|proposal|requirement|delivery/g, weight: 8 },\n    { pattern: /contract|agreement|scope|timeline|budget/g, weight: 6 },\n    { pattern: /feedback|review|approval|sign.?off/g, weight: 4 },\n    { pattern: /external|stakeholder|presentation/g, weight: 3 }\n  ];\n  \n  // Calculate scores\n  for (const patterns of [standupPatterns, strategyPatterns, clientPatterns]) {\n    const typeKey = patterns === standupPatterns ? 'standup' : \n                   patterns === strategyPatterns ? 'strategy' : 'client';\n    \n    patterns.forEach(({ pattern, weight }) => {\n      const matches = content.match(pattern) || [];\n      typeScores[typeKey] += matches.length * weight;\n    });\n  }\n  \n  // Determine winning type (minimum threshold to avoid false positives)\n  const minThreshold = 5;\n  const maxScore = Math.max(...Object.values(typeScores));\n  const winningType = maxScore >= minThreshold ? \n    Object.keys(typeScores).find(key => typeScores[key] === maxScore) : 'general';\n  \n  return {\n    detectedType: winningType,\n    confidence: Math.min(maxScore / 20, 1), // Normalised confidence score\n    scores: typeScores,\n    reasoning: `Classified as ${winningType} with ${Math.round(maxScore)} points`\n  };\n}\n\nconst classification = classifyMeetingType(transcript);\n\nreturn {\n  meetingType: classification.detectedType,\n  meetingUrl: $input.first().json.hangoutLink || $input.first().json.meetingUrl || '',\n  startTime: $input.first().json.start || new Date().toISOString(),\n  transcript: transcript, // Keep full transcript available\n  classification: classification,\n  // Ensure consistent structure for merge compatibility\n  _structureVersion: '2.0'\n};"
+        "content": "## Not activated\nYou can use this trigger to invite a bot to record the meeting and automatically transcriber\n",
+        "height": 544,
+        "width": 1488
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2032,
-        272
+        144,
+        -992
       ],
-      "id": "fef946c0-a4b5-4f43-a32f-be54bf02f382",
-      "name": "🧠 Intelligent Meeting Classifier"
+      "typeVersion": 1,
+      "id": "7e21961d-f542-417e-ada9-cd90d899757b",
+      "name": "Sticky Note"
     },
     {
       "parameters": {
-        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+        "content": "## Transcription",
+        "height": 640,
+        "width": 1296,
+        "color": 3
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4288,
-        96
+        336,
+        -288
       ],
-      "id": "900736f0-e3d2-4c20-8081-93445e1de632",
-      "name": "🔄 Normalise AI Input Structure"
+      "typeVersion": 1,
+      "id": "d1972757-c38c-4414-a814-31e5a585e898",
+      "name": "Sticky Note1"
     },
     {
       "parameters": {
-        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+        "content": "## Meeting summary generation \n",
+        "height": 912,
+        "width": 2192,
+        "color": 6
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4272,
-        288
+        2464,
+        -1056
       ],
-      "id": "e6e1daf5-7f2b-40bb-90cb-2230a556f63f",
-      "name": "🔄 Normalise AI Input Structure1"
+      "typeVersion": 1,
+      "id": "90fff21d-c2bc-47df-b2b5-db0179a94cb0",
+      "name": "Sticky Note2"
     },
     {
       "parameters": {
-        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+        "content": "## Final Output",
+        "height": 736,
+        "width": 1424,
+        "color": 4
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4272,
-        480
+        3680,
+        80
       ],
-      "id": "0e24a9a3-dba6-42da-80e8-123e09492f5f",
-      "name": "🔄 Normalise AI Input Structure2"
+      "typeVersion": 1,
+      "id": "e9d72dee-aa3e-4659-9f6f-97c8023aa296",
+      "name": "Sticky Note3"
     },
     {
       "parameters": {
-        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+        "content": "## Meeting Classifier",
+        "height": 240,
+        "width": 752,
+        "color": 2
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4240,
-        656
+        1808,
+        0
       ],
-      "id": "13b3a73b-fe86-4c5f-bd67-589bc0a91441",
-      "name": "🔄 Normalise AI Input Structure3"
+      "typeVersion": 1,
+      "id": "ae97ffa2-4bff-43b6-a26f-8874eaa2243d",
+      "name": "Sticky Note4"
     }
   ],
   "pinData": {},
@@ -1314,36 +1392,7 @@
       "main": [
         [
           {
-            "node": "🎵 Needs Transcription?1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "🎵 Needs Transcription?1": {
-      "main": [
-        [
-          {
-            "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "🔀 Merge Audio/Text",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Code1": {
-      "main": [
-        [
-          {
-            "node": "🎤 Transcribe Audio File",
+            "node": "🎵 Needs Transcription?",
             "type": "main",
             "index": 0
           }
@@ -1404,13 +1453,42 @@
           }
         ]
       ]
+    },
+    "🎵 Needs Transcription?": {
+      "main": [
+        [
+          {
+            "node": "final_validation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🔀 Merge Audio/Text",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "final_validation": {
+      "main": [
+        [
+          {
+            "node": "🎤 Transcribe Audio File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "1afbc689-ad1d-42eb-abb8-6359776f4b78",
+  "versionId": "c069d334-25af-4920-a38d-710ecfd5d536",
   "meta": {
     "instanceId": "cf5b61afe4255e323133ff5fa67adde397f08909aa4a8c3ee97113be661b827e"
   },
