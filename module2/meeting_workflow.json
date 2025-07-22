@@ -1,5 +1,5 @@
 {
-  "name": "sof_not_",
+  "name": "meeting workflow kinesis",
   "nodes": [
     {
       "parameters": {
@@ -47,8 +47,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        1680,
-        352
+        1840,
+        384
       ]
     },
     {
@@ -56,11 +56,11 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json.meetingType}}",
+              "value1": "={{ $json.classification.detectedType }}",
               "operation": "isNotEmpty"
             },
             {
-              "value1": "={{$json.meetingNotes}}",
+              "value1": "={{ $json.transcript }}",
               "operation": "isNotEmpty"
             }
           ]
@@ -77,7 +77,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Prepare data for Google Sheets\nconst items = [];\n\nfor (const item of $input.all()) {\n  const timestamp = item.json.timestamp || new Date().toISOString();\n  const meetingId = item.json.meetingId || `meeting-${Date.now()}`;\n  \n  items.push({\n    json: {\n      timestamp: timestamp,\n      meetingType: item.json.meetingType || '',\n      meetingNotes: (item.json.meetingNotes || '').substring(0, 100) + '...',\n      attendees: item.json.attendees || '',\n      processingStatus: 'Processing',\n      meetingId: meetingId,\n      // Store original data for later use\n      _original: item.json\n    }\n  });\n}\n\nreturn items;"
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  const timestamp = new Date().toISOString();\n  const meetingId = `meeting-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;\n  \n  // Get transcript from various possible sources\n  const fullTranscript = item.json.transcript || \n                        item.json._original?.transcript || \n                        item.json.meetingNotes || \n                        item.json.text || '';\n  \n  items.push({\n    json: {\n      timestamp: timestamp,\n      meetingType: item.json.meetingType || 'general',\n      meetingNotes: (item.json.meetingNotes || fullTranscript || '').substring(0, 100) + '...',\n      attendees: item.json.attendees || 'Not specified',\n      processingStatus: 'Processing',\n      meetingId: meetingId,\n      fullTranscript: fullTranscript, // NEW: Store complete transcript\n      classificationConfidence: item.json.classification?.confidence || 0,\n      classificationReasoning: item.json.classification?.reasoning || 'Manual classification',\n      // Ensure consistent structure for downstream processing\n      _original: {\n        ...item.json,\n        meetingId: meetingId,\n        structureVersion: '2.0'\n      }\n    }\n  });\n}\n\nreturn items;"
       },
       "id": "4c2d330c-3626-4289-bb10-7151e09e3881",
       "name": "🔧 Prepare Sheet Data",
@@ -130,10 +130,16 @@
               "fieldValue": "={{ $json.meetingId }}"
             },
             {
-              "fieldId": "completedAt"
+              "fieldId": "fullTranscript",
+              "fieldValue": "={{ $json.fullTranscript }}"
             },
             {
-              "fieldId": "actionItemsCount"
+              "fieldId": "classificationConfidence",
+              "fieldValue": "={{ $json.classificationConfidence }}"
+            },
+            {
+              "fieldId": "classificationReasoning",
+              "fieldValue": "={{ $json.classificationReasoning }}"
             }
           ]
         },
@@ -304,9 +310,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "gpt-4o-mini",
+          "value": "gpt-4.1-nano",
           "mode": "list",
-          "cachedResultName": "GPT-4o-Mini"
+          "cachedResultName": "GPT-4.1-NANO"
         },
         "messages": {
           "values": [
@@ -340,9 +346,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "gpt-4o-mini",
+          "value": "gpt-4.1-nano",
           "mode": "list",
-          "cachedResultName": "GPT-4o-Mini"
+          "cachedResultName": "GPT-4.1-NANO"
         },
         "messages": {
           "values": [
@@ -376,9 +382,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "gpt-4o-mini",
+          "value": "gpt-4.1-nano",
           "mode": "list",
-          "cachedResultName": "GPT-4o-Mini"
+          "cachedResultName": "GPT-4.1-NANO"
         },
         "messages": {
           "values": [
@@ -412,9 +418,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "gpt-4o-mini",
+          "value": "gpt-4.1-nano",
           "mode": "list",
-          "cachedResultName": "GPT-4o-Mini"
+          "cachedResultName": "GPT-4.1-NANO"
         },
         "messages": {
           "values": [
@@ -451,8 +457,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        4160,
-        320
+        4688,
+        288
       ]
     },
     {
@@ -464,8 +470,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4464,
-        320
+        4944,
+        288
       ]
     },
     {
@@ -484,8 +490,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        4752,
-        320
+        5232,
+        288
       ]
     },
     {
@@ -497,8 +503,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5056,
-        160
+        5536,
+        128
       ]
     },
     {
@@ -559,8 +565,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 3,
       "position": [
-        5360,
-        160
+        5840,
+        128
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -578,8 +584,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5056,
-        464
+        5536,
+        432
       ]
     },
     {
@@ -648,8 +654,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 3,
       "position": [
-        5360,
-        464
+        5840,
+        432
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -667,8 +673,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        5664,
-        320
+        6144,
+        288
       ]
     },
     {
@@ -682,8 +688,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        5056,
-        672
+        5536,
+        640
       ]
     },
     {
@@ -709,8 +715,8 @@
       "type": "n8n-nodes-base.googleCalendarTrigger",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -160,
+        -64
       ],
       "id": "1453f406-7372-4163-af9c-7297ddaa5eab",
       "name": "Google Calendar Trigger",
@@ -723,19 +729,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// Enhanced meeting type detection\nconst title = ($input.first().json.summary || $input.first().json.meetingTitle || '').toLowerCase();\nconst description = ($input.first().json.description || '').toLowerCase();\nconst combinedText = `${title} ${description}`;\n\nlet type = 'general';\nconst patterns = {\n  standup: ['standup', 'stand-up', 'daily', 'scrum', 'daily sync', 'morning sync'],\n  strategy: ['strategy', 'planning', 'roadmap', 'quarterly', 'annual', 'okr', 'goals'],\n  client: ['client', 'customer', 'prospect', 'sales', 'demo', 'pitch', 'proposal'],\n  retrospective: ['retrospective', 'retro', 'review', 'post-mortem', 'lessons learned'],\n  oneonone: ['1:1', '1-1', 'one on one', 'one-on-one', 'coaching', 'performance']\n};\n\n// Check patterns with scoring\nlet bestMatch = { type: 'general', score: 0 };\n\nfor (const [meetingType, keywords] of Object.entries(patterns)) {\n  let score = 0;\n  for (const keyword of keywords) {\n    if (combinedText.includes(keyword)) {\n      score += keyword.length;\n    }\n  }\n  if (score > bestMatch.score) {\n    bestMatch = { type: meetingType, score };\n  }\n}\n\nreturn {\n  meetingType: bestMatch.type,\n  meetingTitle: $input.first().json.summary || 'Unknown',\n  meetingUrl: $input.first().json.hangoutLink || '',\n  startTime: $input.first().json.start || new Date().toISOString(),\n  confidence: bestMatch.score > 0 ? 'high' : 'low'\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        224,
-        0
-      ],
-      "id": "5cd94d30-91eb-4205-8697-335e6bc95867",
-      "name": "Detect Meeting Type"
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://us-west-2.recall.ai/api/v1/bot",
         "sendHeaders": true,
@@ -743,7 +736,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Token {{ $credentials.recallApi.apiKey }}"
+              "value": "Token YOUR_RECALL_AI_API_KEY"
             },
             {
               "name": "accept",
@@ -763,8 +756,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        400,
-        0
+        144,
+        -80
       ],
       "id": "fd058506-f0b2-486c-ac62-6cfb0d6f1969",
       "name": "HTTP Request"
@@ -781,8 +774,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        912,
-        0
+        688,
+        -80
       ],
       "id": "4421c5f8-1088-44d2-94b3-c097e40f6adf",
       "name": "Transcribe a recording",
@@ -800,8 +793,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1232,
-        32
+        1072,
+        -32
       ],
       "id": "1a60ac89-d89a-4055-ba84-833369458e57",
       "name": "Code"
@@ -811,8 +804,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        608,
-        0
+        384,
+        -80
       ],
       "id": "64624354-7ba1-437d-afff-afc35e9c4e06",
       "name": "Wait",
@@ -880,6 +873,71 @@
       ],
       "id": "a7ffb8ed-059b-4786-850b-a56c2b2f89b9",
       "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const transcript = $input.first().json.meetingNotes || $input.first().json.transcript || $input.first().json.text || '';\n\n\n// Enhanced classification logic based on content analysis\nfunction classifyMeetingType(transcript) {\n  const content = (transcript).toLowerCase();\n  \n  // Scoring system for better accuracy\n  const typeScores = {\n    standup: 0,\n    strategy: 0,\n    client: 0,\n    general: 0\n  };\n  \n  // Standup indicators (higher weight for specific phrases)\n  const standupPatterns = [\n    { pattern: /what did you do yesterday|what are you working on today|any blockers/g, weight: 10 },\n    { pattern: /standup|daily|scrum|sprint/g, weight: 8 },\n    { pattern: /yesterday|today|tomorrow|blocked|blocker/g, weight: 3 },\n    { pattern: /completed|working on|will do|impediment/g, weight: 2 }\n  ];\n  \n  // Strategy indicators\n  const strategyPatterns = [\n    { pattern: /roadmap|strategy|vision|goal|objective|initiative/g, weight: 8 },\n    { pattern: /quarterly|annual|long.?term|strategic|planning/g, weight: 6 },\n    { pattern: /budget|investment|resource allocation|priorit/g, weight: 4 },\n    { pattern: /market|competitive|business model/g, weight: 3 }\n  ];\n  \n  // Client indicators\n  const clientPatterns = [\n    { pattern: /client|customer|proposal|requirement|delivery/g, weight: 8 },\n    { pattern: /contract|agreement|scope|timeline|budget/g, weight: 6 },\n    { pattern: /feedback|review|approval|sign.?off/g, weight: 4 },\n    { pattern: /external|stakeholder|presentation/g, weight: 3 }\n  ];\n  \n  // Calculate scores\n  for (const patterns of [standupPatterns, strategyPatterns, clientPatterns]) {\n    const typeKey = patterns === standupPatterns ? 'standup' : \n                   patterns === strategyPatterns ? 'strategy' : 'client';\n    \n    patterns.forEach(({ pattern, weight }) => {\n      const matches = content.match(pattern) || [];\n      typeScores[typeKey] += matches.length * weight;\n    });\n  }\n  \n  // Determine winning type (minimum threshold to avoid false positives)\n  const minThreshold = 5;\n  const maxScore = Math.max(...Object.values(typeScores));\n  const winningType = maxScore >= minThreshold ? \n    Object.keys(typeScores).find(key => typeScores[key] === maxScore) : 'general';\n  \n  return {\n    detectedType: winningType,\n    confidence: Math.min(maxScore / 20, 1), // Normalised confidence score\n    scores: typeScores,\n    reasoning: `Classified as ${winningType} with ${Math.round(maxScore)} points`\n  };\n}\n\nconst classification = classifyMeetingType(transcript);\n\nreturn {\n  meetingType: classification.detectedType,\n  meetingUrl: $input.first().json.hangoutLink || $input.first().json.meetingUrl || '',\n  startTime: $input.first().json.start || new Date().toISOString(),\n  transcript: transcript, // Keep full transcript available\n  classification: classification,\n  // Ensure consistent structure for merge compatibility\n  _structureVersion: '2.0'\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2032,
+        272
+      ],
+      "id": "fef946c0-a4b5-4f43-a32f-be54bf02f382",
+      "name": "🧠 Intelligent Meeting Classifier"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4288,
+        96
+      ],
+      "id": "900736f0-e3d2-4c20-8081-93445e1de632",
+      "name": "🔄 Normalise AI Input Structure"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4272,
+        288
+      ],
+      "id": "e6e1daf5-7f2b-40bb-90cb-2230a556f63f",
+      "name": "🔄 Normalise AI Input Structure1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4272,
+        480
+      ],
+      "id": "0e24a9a3-dba6-42da-80e8-123e09492f5f",
+      "name": "🔄 Normalise AI Input Structure2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  // Normalise structure regardless of which AI analysis path it came from\n  const normalised = {\n    json: {\n      // Core meeting data\n      meetingId: item.json.meetingId || item.json._original?.meetingId || `meeting-${Date.now()}`,\n      meetingType: item.json.meetingType || item.json._original?.meetingType || 'general',\n      meetingDate: new Date().toISOString().split('T')[0],\n      \n      // AI response data (handle different response formats)\n      aiResponse: item.json.message?.content || \n                 item.json.response || \n                 item.json.choices?.[0]?.message?.content || \n                 item.json.text || '',\n      \n      // Original data preservation\n      _original: item.json._original || item.json,\n      \n      // Structure metadata for debugging\n      _normalised: true,\n      _processingPath: determineProcessingPath(item.json),\n      _timestamp: new Date().toISOString()\n    }\n  };\n  \n  items.push(normalised);\n}\n\nfunction determineProcessingPath(data) {\n  // Helper to identify which AI analysis path this came from\n  if (data.messages && data.messages[0]?.content?.includes('standup')) return 'standup';\n  if (data.meetingType === 'strategy') return 'strategy';\n  if (data.meetingType === 'client') return 'client';\n  return 'general';\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4240,
+        656
+      ],
+      "id": "13b3a73b-fe86-4c5f-bd67-589bc0a91441",
+      "name": "🔄 Normalise AI Input Structure3"
     }
   ],
   "pinData": {},
@@ -910,7 +968,7 @@
       "main": [
         [
           {
-            "node": "✅ Validate Input",
+            "node": "🧠 Intelligent Meeting Classifier",
             "type": "main",
             "index": 0
           }
@@ -1057,7 +1115,7 @@
       "main": [
         [
           {
-            "node": "🔄 Merge AI Results",
+            "node": "🔄 Normalise AI Input Structure",
             "type": "main",
             "index": 0
           }
@@ -1068,7 +1126,7 @@
       "main": [
         [
           {
-            "node": "🔄 Merge AI Results",
+            "node": "🔄 Normalise AI Input Structure1",
             "type": "main",
             "index": 0
           }
@@ -1079,7 +1137,7 @@
       "main": [
         [
           {
-            "node": "🔄 Merge AI Results",
+            "node": "🔄 Normalise AI Input Structure2",
             "type": "main",
             "index": 0
           }
@@ -1090,7 +1148,7 @@
       "main": [
         [
           {
-            "node": "🔄 Merge AI Results",
+            "node": "🔄 Normalise AI Input Structure3",
             "type": "main",
             "index": 0
           }
@@ -1190,17 +1248,6 @@
       "main": [
         [
           {
-            "node": "Detect Meeting Type",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Detect Meeting Type": {
-      "main": [
-        [
-          {
             "node": "HTTP Request",
             "type": "main",
             "index": 0
@@ -1245,7 +1292,7 @@
       "main": [
         [
           {
-            "node": "✅ Validate Input",
+            "node": "🧠 Intelligent Meeting Classifier",
             "type": "main",
             "index": 0
           }
@@ -1302,13 +1349,68 @@
           }
         ]
       ]
+    },
+    "🧠 Intelligent Meeting Classifier": {
+      "main": [
+        [
+          {
+            "node": "✅ Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Normalise AI Input Structure": {
+      "main": [
+        [
+          {
+            "node": "🔄 Merge AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Normalise AI Input Structure1": {
+      "main": [
+        [
+          {
+            "node": "🔄 Merge AI Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "🔄 Normalise AI Input Structure2": {
+      "main": [
+        [
+          {
+            "node": "🔄 Merge AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Normalise AI Input Structure3": {
+      "main": [
+        [
+          {
+            "node": "🔄 Merge AI Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "429a3405-5f8e-4a68-bfdd-08bbe0bfba4f",
+  "versionId": "1afbc689-ad1d-42eb-abb8-6359776f4b78",
   "meta": {
     "instanceId": "cf5b61afe4255e323133ff5fa67adde397f08909aa4a8c3ee97113be661b827e"
   },
