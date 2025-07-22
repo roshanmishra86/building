@@ -93,7 +93,7 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "14BvEzVVxExSyqQaNibzQVZy2v5YcDqLDZR8T3b4gVh8",
+          "value": "{{ $credentials.googleSheets.spreadsheetId }}",
           "mode": "id"
         },
         "sheetName": {
@@ -304,9 +304,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "gpt-4.1-nano",
+          "value": "gpt-4o-mini",
           "mode": "list",
-          "cachedResultName": "GPT-4.1-NANO"
+          "cachedResultName": "GPT-4o-Mini"
         },
         "messages": {
           "values": [
@@ -340,9 +340,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "gpt-4.1-nano",
+          "value": "gpt-4o-mini",
           "mode": "list",
-          "cachedResultName": "GPT-4.1-NANO"
+          "cachedResultName": "GPT-4o-Mini"
         },
         "messages": {
           "values": [
@@ -376,9 +376,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "gpt-4.1-nano",
+          "value": "gpt-4o-mini",
           "mode": "list",
-          "cachedResultName": "GPT-4.1-NANO"
+          "cachedResultName": "GPT-4o-Mini"
         },
         "messages": {
           "values": [
@@ -412,9 +412,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "gpt-4.1-nano",
+          "value": "gpt-4o-mini",
           "mode": "list",
-          "cachedResultName": "GPT-4.1-NANO"
+          "cachedResultName": "GPT-4o-Mini"
         },
         "messages": {
           "values": [
@@ -506,7 +506,7 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "14BvEzVVxExSyqQaNibzQVZy2v5YcDqLDZR8T3b4gVh8",
+          "value": "{{ $credentials.googleSheets.spreadsheetId }}",
           "mode": "id"
         },
         "sheetName": {
@@ -587,7 +587,7 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "14BvEzVVxExSyqQaNibzQVZy2v5YcDqLDZR8T3b4gVh8",
+          "value": "{{ $credentials.googleSheets.spreadsheetId }}",
           "mode": "id"
         },
         "sheetName": {
@@ -699,7 +699,7 @@
         },
         "calendarId": {
           "__rl": true,
-          "value": "c_b9a165db954b01219c66fe01b4aec55839e8f3bb048178deab91fd97b2f21492@group.calendar.google.com",
+          "value": "{{ $credentials.googleCalendar.calendarId }}",
           "mode": "list",
           "cachedResultName": "n8n Calender"
         },
@@ -743,7 +743,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Token YOUR_RECALL_AI_API_KEY"
+              "value": "Token {{ $credentials.recallApi.apiKey }}"
             },
             {
               "name": "accept",
