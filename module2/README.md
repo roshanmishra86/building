@@ -218,7 +218,7 @@ gcloud iam service-accounts keys create credentials.json \
 
 *Meeting Input Log columns:*
 ```
-timestamp | meetingType | meetingNotes | attendees | processingStatus | meetingId
+timestamp | meetingType | meetingNotes | attendees | processingStatus | meetingId | fullTranscript | classificationConfidence | classificationReasoning
 ```
 
 *Action Items columns:*
@@ -1192,7 +1192,7 @@ SHEETS_OPERATIONS = {
 
 # Data formats
 ROW_FORMATS = {
-    'meeting_input': ['timestamp', 'meetingType', 'meetingNotes', 'attendees', 'processingStatus', 'meetingId'],
+    'meeting_input': ['timestamp', 'meetingType', 'meetingNotes', 'attendees', 'processingStatus', 'meetingId', 'fullTranscript', 'classificationConfidence', 'classificationReasoning'],
     'action_items': ['Meeting Date', 'Meeting Type', 'Action Item', 'Owner', 'Due Date', 'Priority', 'Status', 'Follow-up Required', 'Meeting ID'],
     'executive_summary': ['Meeting Date', 'Meeting Type', 'Key Decisions', 'Executive Summary', 'Next Steps', 'Attendees', 'Follow-up Meetings', 'Risks Identified', 'Commitments Count', 'Meeting ID']
 }
