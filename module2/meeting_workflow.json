@@ -1,5 +1,5 @@
 {
-  "name": "meeting workflow kinesis",
+  "name": "sort of",
   "nodes": [
     {
       "parameters": {
@@ -694,141 +694,6 @@
     },
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "mode": "everyX",
-              "value": 5,
-              "unit": "minutes"
-            }
-          ]
-        },
-        "calendarId": {
-          "__rl": true,
-          "value": "GOOGLE_CALANDER_ID",
-          "mode": "list",
-          "cachedResultName": "n8n Calender"
-        },
-        "triggerOn": "eventCreated",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleCalendarTrigger",
-      "typeVersion": 1,
-      "position": [
-        256,
-        -768
-      ],
-      "id": "1453f406-7372-4163-af9c-7297ddaa5eab",
-      "name": "Google Calendar Trigger",
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "A0ZnZMnwE5lZXlbb",
-          "name": "Google Calendar account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://us-west-2.recall.ai/api/v1/bot",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Token YOUR_RECALL_AI_API_KEY"
-            },
-            {
-              "name": "accept",
-              "value": "application/json"
-            },
-            {
-              "name": "content-type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"meeting_url\": \"{{ $json.meetingUrl }}\",\n  \"recording_config\": {\n     \"audio_mixed_mp3\": {}\n  }\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        560,
-        -784
-      ],
-      "id": "fd058506-f0b2-486c-ac62-6cfb0d6f1969",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "resource": "audio",
-        "operation": "transcribe",
-        "binaryPropertyName": "=data {{ $json.recording_config.audio_mixed_mp3 }}",
-        "options": {
-          "language": "english"
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.8,
-      "position": [
-        1104,
-        -784
-      ],
-      "id": "4421c5f8-1088-44d2-94b3-c097e40f6adf",
-      "name": "Transcribe a recording",
-      "credentials": {
-        "openAiApi": {
-          "id": "NX2lXjuSypMLw3DA",
-          "name": "OpenAi account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const prompts = {\n  standup: `Extract from this standup meeting:\n    - Individual updates (yesterday/today/blockers)\n    - Team blockers\n    - Action items with assignees\n    Format as JSON with these exact keys.`,\n  \n  strategy: `Analyse this strategy meeting for:\n    - Key decisions with rationale\n    - Strategic initiatives with owners\n    - Identified risks and mitigations\n    Format as JSON with these exact keys.`,\n  \n  client: `Summarise this client meeting:\n    - Client requirements with priority\n    - Proposals discussed with responses\n    - Commitments made with deadlines\n    Format as JSON with these exact keys.`,\n  \n  general: `Provide meeting overview:\n    - 2-3 sentence summary\n    - Key decisions made\n    - Action items with owners\n    - Follow-up required\n    Format as JSON with these exact keys.`\n};\n\nreturn {\n  prompt: prompts[$json.meetingType],\n  transcript: $json.transcript\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1488,
-        -736
-      ],
-      "id": "1a60ac89-d89a-4055-ba84-833369458e57",
-      "name": "Code"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        800,
-        -784
-      ],
-      "id": "64624354-7ba1-437d-afff-afc35e9c4e06",
-      "name": "Wait",
-      "webhookId": "5dd6c02e-c299-4ced-93a6-b5e7086cbd6e"
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "8204ed7a-b7e0-49e3-81b5-6383feaf2a65",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        -352,
-        128
-      ],
-      "id": "093f778f-4e1f-458a-9bff-a164c45c827f",
-      "name": "Webhook1",
-      "webhookId": "8204ed7a-b7e0-49e3-81b5-6383feaf2a65"
-    },
-    {
-      "parameters": {
         "jsCode": "// Fixed file type detection with proper binary handling\nconst items = [];\n\nfor (const item of $input.all()) {\n  console.log('Input item:', JSON.stringify(item, null, 2));\n  \n  // Check if we have a file upload in binary data\n  const hasBinary = item.binary && Object.keys(item.binary).length > 0;\n  let binaryData = null;\n  let binaryKey = null;\n  \n  if (hasBinary) {\n    // Get the first binary key (usually 'file' from Streamlit)\n    binaryKey = Object.keys(item.binary)[0];\n    binaryData = item.binary[binaryKey];\n    console.log('Binary key:', binaryKey);\n    console.log('Binary data:', binaryData);\n  }\n  \n  // Determine file type and prepare data\n  let fileType = 'text';\n  let fileName = 'Direct Input';\n  let mimeType = '';\n  let fileContent = '';\n  let needsTranscription = false;\n  \n  if (binaryData) {\n    fileName = binaryData.fileName || 'Unknown File';\n    mimeType = binaryData.mimeType || '';\n    \n    // Check if it's audio\n    if (mimeType.includes('audio') || \n        fileName.toLowerCase().endsWith('.mp3') || \n        fileName.toLowerCase().endsWith('.wav') ||\n        fileName.toLowerCase().endsWith('.m4a')) {\n      fileType = 'audio';\n      needsTranscription = true;\n    } else if (mimeType.includes('text') || fileName.toLowerCase().endsWith('.txt')) {\n      fileType = 'text';\n      // Extract text content from binary\n      try {\n        const buffer = Buffer.from(binaryData.data, 'base64');\n        fileContent = buffer.toString('utf-8');\n        console.log('Extracted text content:', fileContent.substring(0, 100));\n      } catch (error) {\n        console.error('Error reading text file:', error);\n        fileContent = 'Error reading file content';\n      }\n    }\n  }\n  \n  // Get meeting metadata from form data\n  const meetingType = item.json.meetingType || 'general';\n  const attendees = item.json.attendees || 'Unknown';\n  const meetingNotes = fileContent || item.json.meetingNotes || '';\n  \n  console.log('Processed data:', {\n    fileType,\n    fileName,\n    needsTranscription,\n    meetingType,\n    hasContent: meetingNotes.length > 0\n  });\n  \n  // Create output item\n  const outputItem = {\n    json: {\n      fileType: fileType,\n      fileName: fileName,\n      mimeType: mimeType,\n      meetingType: meetingType,\n      meetingNotes: meetingNotes,\n      attendees: attendees,\n      needsTranscription: needsTranscription,\n      timestamp: new Date().toISOString(),\n      meetingId: `meeting-${Date.now()}`,\n      binaryKey: binaryKey || 'data'\n    }\n  };\n  \n  // Preserve binary data if it exists\n  if (hasBinary) {\n    outputItem.binary = item.binary;\n  }\n  \n  items.push(outputItem);\n}\n\nreturn items;"
       },
       "id": "864fd34e-fe02-443d-bf09-114e20af98f7",
@@ -940,21 +805,6 @@
     },
     {
       "parameters": {
-        "content": "## Not activated\nYou can use this trigger to invite a bot to record the meeting and automatically transcriber\n",
-        "height": 544,
-        "width": 1488
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        144,
-        -992
-      ],
-      "typeVersion": 1,
-      "id": "7e21961d-f542-417e-ada9-cd90d899757b",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
         "content": "## Transcription",
         "height": 640,
         "width": 1296,
@@ -1016,6 +866,32 @@
       "typeVersion": 1,
       "id": "ae97ffa2-4bff-43b6-a26f-8874eaa2243d",
       "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "formTitle": "Audio file ",
+        "formDescription": "less than 25 mb please",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "File",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": "mp3"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -480,
+        160
+      ],
+      "id": "e248a534-7958-43ed-96f8-c8df7b429372",
+      "name": "On form submission",
+      "webhookId": "29affa71-12a7-49fc-82f6-39696e713164"
     }
   ],
   "pinData": {},
@@ -1322,72 +1198,6 @@
         ]
       ]
     },
-    "Google Calendar Trigger": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Wait",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Transcribe a recording": {
-      "main": [
-        [
-          {
-            "node": "Code",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait": {
-      "main": [
-        [
-          {
-            "node": "Transcribe a recording",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "🧠 Intelligent Meeting Classifier",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Webhook1": {
-      "main": [
-        [
-          {
-            "node": "🔍 Detect File Type1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "🔍 Detect File Type1": {
       "main": [
         [
@@ -1482,13 +1292,24 @@
           }
         ]
       ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "🔍 Detect File Type1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c069d334-25af-4920-a38d-710ecfd5d536",
+  "versionId": "27628902-aba0-4b6f-bf5f-8a66d09a04df",
   "meta": {
     "instanceId": "cf5b61afe4255e323133ff5fa67adde397f08909aa4a8c3ee97113be661b827e"
   },
