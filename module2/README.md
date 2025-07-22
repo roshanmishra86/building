@@ -13,7 +13,7 @@ To set up this workflow follow these steps
 3. Add openai API keys in the OpenAI nodes 
 4. SheetID when asked
 5. the sheet within the google sheet also has ID but you can manually fetch them 
-6. Run the web hook like in the video 
+6. Run the web hook like in the video using streamlit which you can access at this site `https://building-aa7wbhg85xnchjex2qnw86.streamlit.app/`
 
 
 # feature work needed
